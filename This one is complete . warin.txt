@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Moon Birthday • For You</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0f1f; --deep:#0f1730; --moon:#fff6cc; --txt:#f4f7ff;
+  --muted:#9fb0d8; --btn:#1f2a44; --stroke:#32436f; --accent:#a78bfa; --pink:#f9a8d4; --mint:#a7f3d0; --gold:#fde68a;
+}
+*{box-sizing:border-box} html,body{height:100%}
+body{margin:0;background:radial-gradient(1200px 600px at 70% 10%,#14204a 0%,var(--bg) 55%,#050813 100%);
+  color:var(--txt);font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.hidden{display:none !important}
+
+/* stars */
+.stars{position:fixed;inset:0;pointer-events:none;z-index:0}
+.star{position:absolute;width:2px;height:2px;background:#cfe6ff;border-radius:50%;animation:twinkle 2.2s infinite ease-in-out;opacity:.8}
+@keyframes twinkle{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.6);opacity:1}}
+
+/* layout */
+.section{min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:22px;position:relative;z-index:1}
+.wrap{padding:22px}
+.headline{font-family:"Playfair Display",serif;font-size:28px;text-align:center;line-height:1.25}
+.sub{font-size:14px;color:var(--muted);text-align:center;max-width:560px}
+.pill{background:rgba(167,139,250,.16);color:#d7d1ff;font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid rgba(167,139,250,.35)}
+.note{font-size:12px;color:#8ea3cf;text-align:center}
+
+/* buttons */
+.cta,.nav-mini,.ctrl{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.btn{background:linear-gradient(180deg,#223055,#1a2440);color:#eaf2ff;border:1px solid var(--stroke);
+  padding:11px 14px;border-radius:12px;font-weight:600;font-size:14px;cursor:pointer;box-shadow:0 6px 18px rgba(10,20,60,.25);transition:transform .08s ease,box-shadow .2s ease;-webkit-tap-highlight-color:transparent}
+.btn:active{transform:translateY(1px);box-shadow:0 3px 10px rgba(10,20,60,.2)}
+
+/* moon */
+.moon{width:200px;height:200px;border-radius:50%;cursor:pointer;transition:transform .3s ease;
+  background:radial-gradient(80px 80px at 35% 35%,#fffbe2 0%,var(--moon) 35%,#ffe4a3 60%,#ffd38b 70%,#f0c86f 78%,transparent 100%),
+             radial-gradient(200px 200px at 70% 70%,rgba(255,255,255,.12),rgba(0,0,0,0));
+  box-shadow:0 0 65px 18px rgba(255,244,180,.25),0 0 10px 2px rgba(255,255,200,.3) inset;position:relative}
+.moon.glow{box-shadow:0 0 85px 30px rgba(255,244,180,.35),0 0 18px 6px rgba(255,255,220,.35) inset;transform:scale(1.03)}
+.crater{position:absolute;border-radius:50%;background:rgba(0,0,0,.09)} .cr1{width:28px;height:28px;left:44px;top:54px}
+.cr2{width:18px;height:18px;right:40px;top:80px} .cr3{width:12px;height:12px;right:70px;bottom:50px}
+.type{font-size:16px;line-height:1.7;max-width:720px;text-align:center;min-height:120px;margin-top:6px;white-space:pre-wrap}
+
+/* fx */
+.shoot{position:fixed;width:160px;height:2px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.95));
+  top:20%;left:-180px;transform:rotate(12deg);filter:drop-shadow(0 0 6px #fff);animation:shoot 1.3s ease-out forwards;z-index:1;pointer-events:none}
+@keyframes shoot{to{left:110%;top:70%;opacity:0}}
+.confetti{position:fixed;left:50%;top:-20px;width:8px;height:14px;opacity:.95;border-radius:2px;transform:translateX(-50%) rotate(0);
+  animation:drop 2.2s ease-in forwards;z-index:3;pointer-events:none}
+@keyframes drop{0%{transform:translate(-50%,-20px) rotate(0)}100%{transform:translate(calc(-50% + var(--x)),110vh) rotate(540deg);opacity:.95}}
+
+/* letter */
+.envelope{width:min(92vw,420px);height:240px;position:relative;perspective:1200px;cursor:pointer}
+.back{position:absolute;inset:0;background:#e5e7eb;border-radius:12px;box-shadow:0 14px 40px rgba(0,0,0,.35) inset}
+.flap{position:absolute;inset:0;background:linear-gradient(#f3f4f6,#e5e7eb);clip-path:polygon(0 0,100% 0,50% 60%);transform-origin:top;transition:transform .6s ease}
+.paper{position:absolute;left:10px;right:10px;bottom:10px;top:40px;background:#fffdf7;border-radius:10px;box-shadow:0 8px 18px rgba(0,0,0,.25);padding:16px;overflow:auto}
+.open .flap{transform:rotateX(-155deg)}
+.title{font-family:"Playfair Display",serif;font-size:24px;text-align:center;color:#0b1220}
+.msg{white-space:pre-wrap;line-height:1.75;color:#0b1220;font-size:15px}
+
+/* gallery */
+.frame{display:grid;place-items:center}
+.photo{width:min(92vw,420px);aspect-ratio:3/4;background:#0f1730;border:1px solid #283255;border-radius:16px;overflow:hidden;position:relative;box-shadow:0 20px 50px rgba(0,0,0,.45)}
+.photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s ease}
+.photo:hover img{transform:scale(1.03)}
+.cap{position:absolute;left:0;right:0;bottom:0;padding:10px 12px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.6));font-size:13px}
+
+/* cats */
+.catwrap{display:grid;gap:14px;grid-template-columns:1fr;max-width:820px;width:100%}
+@media(min-width:640px){.catwrap{grid-template-columns:1fr 1fr}}
+.catcard{background:#0f1730;border:1px solid #283255;border-radius:16px;overflow:hidden;position:relative;padding:12px}
+.catcard img{width:100%;height:300px;object-fit:cover;border-radius:12px}
+.tag{position:absolute;left:12px;top:12px;background:rgba(167,139,250,.25);border:1px solid rgba(167,139,250,.5);color:#e9e5ff;padding:4px 10px;border-radius:999px;font-size:12px}
+.small{font-size:12px;color:#b9c7ec;margin-top:6px}
+
+/* heart particles */
+.heart{position:absolute;width:14px;height:14px;transform:rotate(45deg);background:var(--pink);left:50%;bottom:20px;margin-left:-7px;animation:float 1.4s ease-out forwards;opacity:.9}
+.heart:before,.heart:after{content:"";position:absolute;width:14px;height:14px;border-radius:50%;background:var(--pink)}
+.heart:before{left:-7px} .heart:after{top:-7px}
+@keyframes float{to{transform:translateY(-90px) rotate(45deg);opacity:0}}
+
+/* games */
+.gameTabs{display:flex;gap:8px;justify-content:center;margin:6px 0}
+.arena{width:min(94vw,420px);height:520px;background:#0f1730;border:1px solid #283255;border-radius:16px;position:relative;overflow:hidden}
+.hud{display:flex;justify-content:space-between;gap:10px;width:min(94vw,420px);margin:8px auto 0}
+.badge{background:#1f2a44;border:1px solid #33476d;border-radius:10px;padding:8px 12px;font-weight:600}
+.player{position:absolute;bottom:12px;left:50%;width:70px;height:18px;margin-left:-35px;border-radius:10px;background:linear-gradient(180deg,#ffe8a4,#ffd166);box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.starDrop{position:absolute;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle,#fff,#ffd58a);box-shadow:0 0 8px rgba(255,240,200,.8)}
+.heartTap{position:absolute;width:22px;height:22px}
+.heartTap:before,.heartTap:after{content:"";position:absolute;width:22px;height:22px;background:#ff8ab3;border-radius:50%}
+.heartTap:before{left:11px} .heartTap:after{top:-11px}
+.heartTap{transform:rotate(45deg)}
+.timebar{height:8px;background:#203056;border:1px solid #33476d;border-radius:999px;overflow:hidden;margin-top:8px;width:min(94vw,420px)}
+.fill{height:100%;background:linear-gradient(90deg,#a7f3d0,#93c5fd,#f9a8d4);width:100%}
+
+/* music + wish */
+.musicBox{display:grid;gap:10px;max-width:560px;width:100%;justify-items:center}
+.input{width:100%;background:#0f1730;color:#eaf2ff;border:1px solid #283255;border-radius:10px;padding:10px;font-size:14px}
+footer{padding:22px 0 16px;text-align:center;font-size:12px;color:#7991c4}
+
+@media(min-width:480px){.headline{font-size:32px}.moon{width:220px;height:220px}}
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+
+<!-- HOME -->
+<section id="home" class="section">
+  <div class="pill">Moon-themed for my MOON </div>
+  <div class="headline" id="headline">Happy Birthday, My Little Moon (26 Years of Sweetness)</div><!-- EDIT HERE -->
+  <div class="sub" id="smallText">Tap the moon for a little magic. Open the wishes when you are ready. Everything here is made only for you.</div><!-- EDIT HERE -->
+
+  <div class="moon" id="moon">
+    <div class="crater cr1"></div><div class="crater cr2"></div><div class="crater cr3"></div>
+  </div>
+
+  <div class="cta">
+    <button class="btn" id="wishBtn">Open Wishes</button>
+    <button class="btn" onclick="show('letter')">Open Letter</button>
+    <button class="btn" onclick="show('gallery')">Gallery</button>
+    <button class="btn" onclick="show('cats')">Cat Corner</button>
+    <button class="btn" onclick="show('games')">Mini Games</button>
+    <button class="btn" onclick="show('music')">Music</button>
+    <button class="btn" id="surpriseBtn">Surprise</button>
+    <button class="btn" onclick="show('wishjar')">Wish Jar</button>
+  </div>
+
+  <div class="type" id="wishText"></div>
+
+  <div class="note"> You are so special to me My Jannnnnnnn.</div>
+</section>
+
+<!-- LETTER -->
+<section id="letter" class="section hidden">
+  <div class="envelope" id="env">
+    <div class="back"></div>
+    <div class="flap"></div>
+    <div class="paper">
+      <div class="title">A Little Moon Letter For You</div>
+      <div class="msg" id="letterText">
+<!-- EDIT HERE: long letter text -->
+🌙 Happy Birthday, My Little Moon 🤍
+
+26 years ago, on this day, the world got someone so special  you.
+I don’t know if the stars planned it or not, but I’m sure they smiled that day.
+You’re turning 26, but your heart still shines with that same playful warmth I see in your childhood photos  the one where you’re smiling beside your grandma . I see you holding Nami and Yuki and also heard laughing freely with your friends.
+I’ve seen your cute side, your kind side, and your strong side , your spicy side  all of them make you even more special to me. You’ve got this beautiful glow that no one can miss ,  in your voice, in your smile, in the way you care everyone. 
+When I look at your old photos, the little you with that bright smile  I see the same energy even now. The same spark. You still have that childlike glow that makes
+people feel light around you. Even your smile feels like home.
+You’ve already made great progress in life, and I hope you continue to achieve even more. Spend your days happily with your mom, little Toji, your brother, your dad  everyone. I also hope your sister’s condition gets better soon.
+I know you’re always running around  that’s good, but please take care of your health . Look after your liver too. I know you’re very strong, but still, always be careful. You’re not that young anymore, so maybe it’s time to think about marriage  just teasing you, Jannnnnnn!
+I wish that someone comes into your life who loves you even more than you love yourself  someone who keeps you comfortable, takes you out for a beer every week, gives you freedom to be yourself, stays by your side through every situation, tells you ghost stories, and takes you to the beach. I hope that person stays with you through your bad days too.
+I really like the way you care about your friends  your best friend Noon, especially. I hope you can always stay cheerful like this with everyone. You are Nami and Yuki’s mom  may you always be able to fulfill that role beautifully.
+And please take care of your voice too  I love the sound that comes from it. Every moment we’ve spent together  in games, in chats, on calls  is special to me. Thank you for everything. Thank you for coming into my life. I’m truly happy.
+If you don’t get married within the next four years, I’ll come with a marriage proposal myself  just kidding! Don’t think too much about me or our future right now. Let things flow as they are. If you ever feel down, call me or text me. I’ll listen to everything you say  and I’ll tell you stories, even creepy ghost ones.
+I couldn’t finish writing this properly  it’s already gotten so long. Best of luck for everything you’ll do in your life. ❤️
+
+You’ve shared so much with me  your stories, your voice, your laughter, your moments with Nami and Yuki  and every time, I feel lucky. Your voice became my favorite sound, your words my comfort, and your presence my calm.
+You’re not just cute, not just sweet  you’re something deeper. You carry emotions so purely
+Keep glowing, keep being you. You’re truly, wonderfully special.
+Happy Birthday once again, Jannnnnnnnnn
+
+Thank you for being you. For your sweet words, your laughter, and all the big things that make my days brighter. You deserve every bit of happiness, love and peace this world can give. 
+      </div>
+    </div>
+  </div>
+  <div class="nav-mini">
+    <button class="btn" onclick="show('home')">Back Home</button>
+    <button class="btn" onclick="show('gallery')">Go to Gallery</button>
+  </div>
+</section>
+
+<!-- GALLERY (10 photos) -->
+<section id="gallery" class="section hidden">
+  <div class="frame">
+    <div class="photo">
+      <img id="gimg" src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop" alt="Memory">
+      <div class="cap" id="gcap">Memory one — replace this caption</div>
+    </div>
+  </div>
+  <div class="ctrl">
+    <button class="btn" id="prev">Prev</button>
+    <button class="btn" onclick="show('home')">Home</button>
+    <button class="btn" id="next">Next</button>
+  </div>
+  <div class="note">Replace image URLs and captions in the pics array inside the script.</div>
+</section>
+
+<!-- CATS -->
+<section id="cats" class="section hidden">
+  <div class="headline">Cat Corner</div>
+  <div class="sub">Tap on them to send floating hearts.</div>
+  <div class="catwrap">
+    <div class="catcard">
+      <div class="tag" id="cat1name">Cat One</div>
+      <img id="cat1img" src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?q=80&w=1200&auto=format&fit=crop" alt="Cat 1">
+      <div class="small">Paste image link and name, then Save.</div>
+      <input class="input" id="cat1url" placeholder="Image URL for Cat One"><br>
+      <input class="input" id="cat1label" placeholder="Cat One Name">
+      <button class="btn" onclick="saveCat(1)">Save Cat One</button>
+    </div>
+    <div class="catcard">
+      <div class="tag" id="cat2name">Cat Two</div>
+      <img id="cat2img" src="https://images.unsplash.com/photo-1511044568932-338cba0ad803?q=80&w=1200&auto=format&fit=crop" alt="Cat 2">
+      <div class="small">Paste image link and name, then Save.</div>
+      <input class="input" id="cat2url" placeholder="Image URL for Cat Two"><br>
+      <input class="input" id="cat2label" placeholder="Cat Two Name">
+      <button class="btn" onclick="saveCat(2)">Save Cat Two</button>
+    </div>
+  </div>
+  <div class="nav-mini"><button class="btn" onclick="show('home')">Back Home</button></div>
+</section>
+
+<!-- MINI GAMES -->
+<section id="games" class="section hidden">
+  <div class="headline">Mini Games</div>
+  <div class="gameTabs">
+    <button class="btn" onclick="openGame(1)">Star Catcher</button>
+    <button class="btn" onclick="openGame(2)">Heart Pop</button>
+  </div>
+
+  <!-- Game 1 -->
+  <div id="game1" class="wrap">
+    <div class="hud">
+      <div class="badge">Score: <span id="g1score">0</span></div>
+      <div class="badge">Time: <span id="g1time">20</span>s</div>
+    </div>
+    <div class="timebar"><div id="g1fill" class="fill"></div></div>
+    <div id="g1arena" class="arena">
+      <div id="player" class="player"></div>
+    </div>
+    <div class="nav-mini">
+      <button class="btn" onclick="startG1()">Start</button>
+      <button class="btn" onclick="stopG1()">Stop</button>
+      <button class="btn" onclick="show('home')">Home</button>
+    </div>
+  </div>
+
+  <!-- Game 2 -->
+  <div id="game2" class="wrap hidden">
+    <div class="hud">
+      <div class="badge">Score: <span id="g2score">0</span></div>
+      <div class="badge">Time: <span id="g2time">30</span>s</div>
+    </div>
+    <div class="timebar"><div id="g2fill" class="fill"></div></div>
+    <div id="g2arena" class="arena"></div>
+    <div class="nav-mini">
+      <button class="btn" onclick="startG2()">Start</button>
+      <button class="btn" onclick="stopG2()">Stop</button>
+      <button class="btn" onclick="show('home')">Home</button>
+    </div>
+  </div>
+</section>
+
+<!-- MUSIC -->
+<section id="music" class="section hidden">
+  <div class="headline">Music • Talking to the Moon</div>
+  <div class="musicBox">
+    <audio id="playerAudio" controls preload="none" style="width:100%">
+      <!-- EDIT HERE: Your MP3 URL will load via the box below -->
+      <source id="audioSrc" src="">
+    </audio>
+    <input id="songName" class="input" placeholder="Song name (e.g., Talking to the Moon)" value="Talking to the Moon"><!-- EDIT HERE -->
+    <input id="songUrl" class="input" placeholder="Paste MP3 link here (your own hosted file)">
+    <div class="nav-mini">
+      <button class="btn" onclick="saveSong()">Save Song</button>
+      <button class="btn" onclick="playSong()">Play</button>
+      <button class="btn" onclick="pauseSong()">Pause</button>
+      <button class="btn" onclick="show('home')">Home</button>
+    </div>
+    <div class="note">Note: Please use your own MP3 link or a file you have permission to share.</div>
+  </div>
+</section>
+
+<!-- WISH JAR -->
+<section id="wishjar" class="section hidden">
+  <div class="headline">Wish Jar</div>
+  <div class="sub">Type a wish and add. They will float like tiny stars.</div>
+  <input id="wishInput" class="input" placeholder="Write a wish…">
+  <div class="nav-mini">
+    <button class="btn" onclick="addWish()">Add Wish</button>
+    <button class="btn" onclick="clearWishes()">Clear All</button>
+    <button class="btn" onclick="show('home')">Home</button>
+  </div>
+</section>
+
+<footer>Made with a little moonlight and a lot of care</footer>
+
+<script>
+/* STAR FIELD */
+const starBox=document.getElementById('stars');
+for(let i=0;i<110;i++){const s=document.createElement('span');s.className='star';
+  s.style.left=Math.random()*100+'vw'; s.style.top=Math.random()*100+'vh';
+  s.style.animationDelay=(Math.random()*2)+'s'; s.style.opacity=(0.4+Math.random()*0.6).toFixed(2);
+  s.style.transform=`scale(${0.8+Math.random()*1.6})`; starBox.appendChild(s);}
+
+/* SECTION NAV */
+function show(id){document.querySelectorAll('.section').forEach(sec=>sec.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden'); window.scrollTo({top:0,behavior:'smooth'});}
+
+/* MOON FX */
+const moon=document.getElementById('moon');
+moon.addEventListener('click',()=>{moon.classList.toggle('glow');
+  for(let i=0;i<2;i++){const sh=document.createElement('div');sh.className='shoot';
+    sh.style.top=(10+Math.random()*70)+'%';document.body.appendChild(sh);setTimeout(()=>sh.remove(),1400);}});
+
+/* TYPEWRITER WISH */
+const wishBtn=document.getElementById('wishBtn'); const wishText=document.getElementById('wishText');
+const wishMessage=`To My Jannnnnnnnnn who turns quiet nights into soft constellations
+
+May your year be kind and bright
+May peace sleep on your shoulders
+and joy follow you like moonlight
+
+I made this little sky for My Moon
+So that even on tired days
+you can tap the moon
+and remember that someone is always wishing for your smile`; // EDIT HERE
+function typeWriter(el,text,speed=24){el.textContent=''; let i=0;
+  const tick=()=>{el.textContent+=text.charAt(i); i++; if(i<text.length){setTimeout(tick, text[i-1]==='\n'?120:speed);} };
+  tick();} wishBtn.addEventListener('click',()=>typeWriter(wishText,wishMessage));
+
+/* CONFETTI */
+document.getElementById('surpriseBtn').addEventListener('click',()=>{
+  for(let i=0;i<90;i++){const c=document.createElement('div');c.className='confetti';
+    const colors=['#fde68a','#fca5a5','#93c5fd','#a7f3d0','#c4b5fd','#f9a8d4']; c.style.background=colors[i%colors.length];
+    c.style.left=(6+Math.random()*88)+'vw'; c.style.setProperty('--x',(Math.random()*200-100)+'px');
+    c.style.animationDuration=(1.6+Math.random()*1.3)+'s'; document.body.appendChild(c); setTimeout(()=>c.remove(),2400);} });
+
+/* LETTER */
+const env=document.getElementById('env'); env?.addEventListener('click',()=>env.classList.toggle('open'));
+
+/* GALLERY (25) */
+const pics = [
+  {src:'https://media.discordapp.net/attachments/1387340981220933766/1430155901506949120/18t8qXHo2HgqyGXELYXRrdGABykI8pzE_Ev_fgcpU95GY-qOL6JxSxfhyERmj3w.png?ex=68f8bff9&is=68f76e79&hm=8fa2e68a5583fc370adeb23c756a4dd9884645a9b0a0aaea1e4c1fe71d3076a9&=&format=webp&quality=lossless&width=635&height=847',cap:'Awwww, that’s my Jannnnnnn , my little moon  Just look at that tiny face… that innocent smile. The cutest little moon ever, even back then. I can’t believe how adorable you were , like a baby sunshine with moonlight mixed in. Lifted by love into a tiny night sky. Two steady hands, one bright giggle '},
+  {src:'https://media.discordapp.net/attachments/1387340981220933766/1430156657236906085/1eB9lnOjDLyric9E_yEqkcvXhtCSquIVRM8SKvTcoSVQzDpO92UVhIMxr3sV2QnM.png?ex=68f8c0ae&is=68f76f2e&hm=08e43f9f399ea6fb6d4a476996a8bfd95c12c777c0f179c7f61afdc45dcacc8c&=&format=webp&quality=lossless&width=602&height=847',cap:'You look so playful and full of joy in your childhood photos. And your grandma. I know you miss her a lot. But believe me, she would be so proud of you. You’re living a good, healthy life , you just stay up a little too late outside  at night  ,  but you’re happy, and that’s what truly matters the most. Grandma, look at your little Moon . still soft, still bright .Grandma still carries the calm you placed in her.'},
+  {src:'https://media.discordapp.net/attachments/1387340981220933766/1430158062370557962/1v8lQqhD-HGmu5LP6susmAB6zjwMsHgPObEFxVZViXkWxrvR1RTCvFwZ_ydnNkw.png?ex=68f8c1fd&is=68f7707d&hm=a7d31099f6b9b9c6fd1c1bcb483d423c6fa7d6bab6ea143abfb93bed4f33cd70&=&format=webp&quality=lossless&width=484&height=846',cap:'2015 , that’s my moon, my little big moon .  your hair, full and beautiful. You looked so effortlessly cute back then. That time, I was just a class 4 kid, probably running around with no clue that somewhere, my moon was already shining that bright. Hehe .Morning sun on green and gold, soft as a breeze . Hair falls like a quiet waterfall ,effortless and tidy .'},
+  {src:'https://media.discordapp.net/attachments/1387340981220933766/1430158550126170242/1bAY37AsCnrEQIG0xiSU3cW8zmeJMBMayqRB0OLorszMM4kRZ8P3xX2vQTKRLWw.png?ex=68f8c271&is=68f770f1&hm=79ad19033deaed12068f64ecb3d428f040ab72a881204cd2ce952d19400d21a4&=&format=webp&quality=lossless',cap:'I love this picture so much . What a pose . A calm blue‑green lake with soft ripples. Layered green mountains in the back, heavy grey clouds above  Light hoodie with a floral skirt and simple shoes Wind in her hair, flowers on her skirt .A lake that listens and a road that waits .No rush, just a gentle afternoon . This is what calm looks like '},
+  {src:'https://media.discordapp.net/attachments/1387340981220933766/1430159341771685929/1V5hxA9zEWaZnoqcvYhAwe-lq08IaEhrSTNIoIUl8DV7v7anKaIQgGEPjSEAx0Os.png?ex=68f8c32e&is=68f771ae&hm=a6e524cb7c1d69a486d636814c9cc02fe20ca6309ced146788819bf93d022972&=&format=webp&quality=lossless&width=261&height=350',cap:'I still remember this photo. I was about to leave, and you said, “In case you miss me, here’s my photo with Yuki.” That was the first time I noticed your eye and the little mole below it .so cute. Keep this moment on repeat  . My Moon keeping 2 tiny star for company '},
+  {src:'https://media.discordapp.net/attachments/1387340981220933766/1430159840466047017/1B_F9zYGshZTz6z_TwbKGZK8HdnPZ6fTZ3H8-xxSbvIVAahxDF1sMdzNyP1UN.png?ex=68f8c3a5&is=68f77225&hm=de25e4f5f455a5eb4a871263b3185749132b6e103acb83d751b09898f98f9621&=&format=webp&quality=lossless&width=263&height=350',cap:'This is the second photo you gave me. I was so surprised when I saw you like this. You looked absolutely gorgeous. You were going to the theater with your friends to watch a movie. Off to the movies, but My Jannnnnnnnn already looks like the lead.'},
+  {src:'https://media.discordapp.net/attachments/1387340981220933766/1430160554277732416/16MDLrShx9dlsAMIXn7rjLhsM2nS_y_LA5aemof3qDp8Y6JYOAyXgWhIJFQQPHQ.png?ex=68f8c44f&is=68f772cf&hm=96ac77a0d021f89279bbaeb8e5205cc29e24ca824169d683bfb1df6f54951363&=&format=webp&quality=lossless&width=635&height=847',cap:'That day you looked so cute. Your outfit was perfect, and with the glasses, it added extra cuteness. I couldn’t stop noticing you. I was watching your new outfit, and I really liked it , honestly, you looked amazing. Outfit checklist: pretty cream top, comfy jeans, crocs and glasses .Cozy, calm, and beautifully Tee rak Khaaaaaab '},
+  {src:'https://media.discordapp.net/attachments/1387340981220933766/1430161076321910854/1xH-dHka94TBqZSDBmrqqYnPDWIBIiDNynOzTayVs9fIQMCcWStjJZeVM0WFAiw.png?ex=68f8c4cb&is=68f7734b&hm=6ff8f0e230f7443ff0f6217bda17ef5b3e40838a43caa6454e595317e73f9b61&=&format=webp&quality=lossless&width=262&height=350',cap:'You were holding Nami and Yuki together. It looked so cute. Both of the little ones were in their mother’s arms. Nami and Yuki’s eyes and  chubby looked so soft and adorable. Nami = cinnamon sprinkle, queen of side‑eyes.Yuki = head‑tilt specialist and purr therapist.'},
+  {src:'https://media.discordapp.net/attachments/1387340981220933766/1430161631245107411/1zq8LcAf3YsJjQ1Ahf0CZQvE5nfeLlgPTmLJiINTddwKYQOj6A5xUuDaKwjl7J7A.png?ex=68f8c550&is=68f773d0&hm=39fe76ce2c5b217284e2c24d32625b683b784c6365296ce431712a9b1e91b7eb&=&format=webp&quality=lossless&width=635&height=847',cap:' Miiimiiii -- Warm fur, steady eyes, tiny pink nose This is what comfort looks like.'},
+  {src:'https://media.discordapp.net/attachments/1387340981220933766/1430162048771297360/1tp7rcmg7SNAGytdIyRzkzucSc_-1T12Z5Pz08hqHWitIdDJ-F7fB5SFWJkqmNa0.png?ex=68f8c5b3&is=68f77433&hm=bb461db537edfe455cc646d1c5ce37af51f89da4751b641133b011b8f9b05a1b&=&format=webp&quality=lossless&width=263&height=350',cap:'KiKiiii ---Cream‑tipped ears, pastel nose, quiet eyes . Yuki -  Occupation: Pillow Tester'},
+  {src:'https://media.discordapp.net/attachments/1387340981220933766/1430162613349650493/1gdJQ8fcC5ggaOitybFTzYKo78jVzEq9MD8LJP8kQo2tO31CXBjHnT8Y200msRJA.png?ex=68f8c63a&is=68f774ba&hm=d6e621afd4340ca2e3e335f86917b57315c32426f47ebabd40f1f9b64e6b8a39&=&format=webp&quality=lossless',cap:'Mothers Day .Sending blessings again to my Jannnnnnnn   mom’s for long life and happiness.I felt so happy to see this. Nothing like this happens in our country.  This was so so  heartwarming. . May the bond between you and your mom always remain this strong and full of love. Kneel down, wash Mom’s feet, place love where words cannot reach. Thank you, Mom, always '},
+  {src:'https://media.discordapp.net/attachments/1387340981220933766/1430163317460304033/1bY3Nv4mNcddhdCH9O3wT6f7N07qn9WwXY3WNAzSTNO74IGWb7ijdbrv-RflgMw.png?ex=68f8c6e2&is=68f77562&hm=d8fc80a8ccc7c72b09977d8bb721acced7d2d6196b58f7647868d0f8ec399bd2&=&format=webp&quality=lossless',cap:'Yuki is be like , Dont stare at my Mom you Almash .hahaha'},
+  {src:'https://media.discordapp.net/attachments/1387340981220933766/1430163928444440606/15OgP_AWI1RWsd5a0sLC-a7UoPoA8Ffbbm35-6_OTefm7L1_A3L4H_eAGJ8et.png?ex=68f8c773&is=68f775f3&hm=99f69ba9c140735e6abff663dc6c5ed6a26971b2538ca33e035169eab5d9abb4&=&format=webp&quality=lossless',cap:'It was our very first chat. You said, ‘I am dear,’ but I didnt thought that was your nickname. That moment marked the beginning of a beautiful journey between us on Discord — something simple yet unforgettable. From that day, every conversation felt a little more special, and that’s how our story quietly began '},
+  {src:'https://media.discordapp.net/attachments/1387340981220933766/1430164462911881286/1uPikOqnmLHk7NpNTb0CvF-ROEFBwHH79kH2dZGwN6uZvAYXpjDJoRRkPuejtS_w.png?ex=68f8c7f3&is=68f77673&hm=56ccf181a7fea8536c8b2dba77995c4eb990beec6158b859a2d5f5deb97d60b3&=&format=webp&quality=lossless',cap:'Talking to the Moon’ became more than just a song — it became my emotion. You were the one who gave it to me, and since that day, we began calling each other our moon, like two souls connected by the same sky'},
+  {src:'https://media.discordapp.net/attachments/1387340981220933766/1430164698023592059/1NsLWdNehAAu3UB7DrJaleT2TSZZxXZBr42Tv5ZI6rHRW35unjnz_n_7qe0eZA0Y.png?ex=68f8c82b&is=68f776ab&hm=5682bb9836f59501a6c7e4d9c95ce9393eabb987135184bca1bf817b38825279&=&format=webp&quality=lossless',cap:'That night was so, so special to me. You stayed with me the whole night, talking and keeping me company. I began to feel like you were a so close to me . I can’t put into words how beautiful it felt. It was my birthday  and you made it feel like the most precious night of my life '},
+  {src:'https://media.discordapp.net/attachments/1387340981220933766/1430164988517023825/1pk_LmmuYrhHeB54F-Qyi-UIQfbcjWEYYBP3siT2N_JAYvk_PZtxyTfG0ac5PxQ.png?ex=68f8c870&is=68f776f0&hm=a383d91197b1af929474e2468248873da6ac739e7e66ac6e2210c5404cbfe135&=&format=webp&quality=lossless',cap:'Hiiii Jannnnnnnnnnn . Let me take all sweetness from me, Hiiii Jannnnnnnnnnn . Let me take all sweetness from me, heh first time I was faceing something like this '},
+  {src:'https://media.discordapp.net/attachments/1387340981220933766/1430165862165516288/1ZNav0wlKxlnXtIXMfoOXK8bFjM5UdedZcxAGmwE9MXFmnSDGB2NuCUYu_doFSUw.png?ex=68f8c940&is=68f777c0&hm=8239d8d069501c4ae33a636a9f0fef435e1532cdd38b2ba91709c1685cdf8764&=&format=webp&quality=lossless',cap:'I said that day - I am so happy today. 70 % for you . 30% for Moon. Obviously My moon makes me more happy. I am enjoying this beautiful day moment more just because you are with me now '},
+  {src:'https://media.discordapp.net/attachments/1387340981220933766/1430166177333641266/1MAvkM2qlTuZMezAKkQmrixekbWy9Y02P4iivNd8raJdV0XRy9e1c_vm6QTMKVA.png?ex=68f8c98b&is=68f7780b&hm=7548d5d32fd927929010c6c5e1b7bec09aa377c3cecf263abda4664a5d428cf2&=&format=webp&quality=lossless&width=276&height=350',cap:'Sending you that voice message was honestly one of the best decisions I ever made. I never imagined you’d love it so much, or that something so simple could make our conversations feel even more special'},
+  {src:'https://media.discordapp.net/attachments/1387340981220933766/1430166646798159912/1RAJEzDtEacAt9b4_r1xC8meI4YiA08LuvGug2P4wvlFHzilrCy6mm3bZ1PskDJc.png?ex=68f8c9fb&is=68f7787b&hm=953924ad1b2a2d80720a5a98136a668b21b2940ac612bb085b030114784c0868&=&format=webp&quality=lossless&width=267&height=350',cap:' Isnt it cute ? Just look at my face , You will realize how Happy I was '},
+  {src:'https://media.discordapp.net/attachments/1387340981220933766/1430167302246240338/1L7fs-BvDcxc5IEaJ20JOnSkhvgyW14dAVeDoTPnom7hXqgvgaFyB0j8HSsn3Zvk.png?ex=68f8ca98&is=68f77918&hm=7982c64b497e6293b07dc3527c96331e67daa35e6932fbbf5eca159fba4fe644&=&format=webp&quality=lossless&width=245&height=350',cap:'We were yapping at the Lighthouse, and playing on that map with you always felt so special to me. Every moment we spent there was truly unforgettable.'},
+  {src:'https://media.discordapp.net/attachments/1387340981220933766/1430167601643782296/1r0eOh5j-aFMUM5sT92LB1yuxn8zJMAyl8vOnHUvy1woC6snY6RrgOf0YpX4pcyA.png?ex=68f8cadf&is=68f7795f&hm=b7a42aa2c06080a7dde40a14d4541adc69740131cb54b4c9eb65eef1fe7ab893&=&format=webp&quality=lossless&width=850&height=847',cap:'Two tiny adventurers taking a tiny chair break .Stone fireplace, sleepy plant, a painting that twinkles .Little Moon and me  in a pocket‑sized cottage'},
+  {src:'https://media.discordapp.net/attachments/1387340981220933766/1430168712421441567/1ZODzKlpY_Ku9SOwn2BWCihn-U2v-I2ZSgXh7QkzPxAdhAYfh0tsRqZt-csSRoQ.png?ex=68f8cbe8&is=68f77a68&hm=ebd4ffbf199063324daeb5fdf722c335315f1c82ece46d6ab20f7ed2244d186a&=&format=webp&quality=lossless&width=225&height=350',cap:'Isnt it cute ? Two pixels, one mood: peace'},
+  {src:'https://media.discordapp.net/attachments/1387340981220933766/1430169038784303176/1TdENq6F939MEgju6J6NeppK198AS4foG7LhYxB30MLCvUGFA89QHreUtXVHBGD0.png?ex=68f8cc36&is=68f77ab6&hm=109524b4634c9f307055ccc766f07968236ee0f159a3bbca8f89d196ef73daca&=&format=webp&quality=lossless&width=182&height=350',cap:'Isnt it cute ? Umbrella up, warmth unlocked'},
+  {src:'https://media.discordapp.net/attachments/1387340981220933766/1430169411884679239/16dLHjV9vHNKLhmP66SlV_hB-5sYL2MwF_x6KqSDjcLspzWkoUonjk-snXyalXA.png?ex=68f8cc8f&is=68f77b0f&hm=d874f9b904def7f3a13edcccdafaa1ef7e2ff6b24cb118c71425710a17d9bdf2&=&format=webp&quality=lossless&width=381&height=847',cap:'oiiiiii Jannnnnnnnnnnnnn -oiiiiiii Tee rak khaaaaaaab -Our golden rules. I love our phone talks  they always feel so easy and comforting. Your Bangla accent is the cutest thing ever, and the way you pronounce Bangla words just melts my heart. Mistiiiiiii! miss korbo . Oiiiii Jannnnnnnnnnn  infinite happiness for you '},
+  {src:'https://images.unsplash.com/photo-1520975661595-6453be3f7070?q=80&w=1200&auto=format&fit=crop',cap:'Memory 25'}
+
+]; // EDIT HERE: replace with your links
+let gi=0; const gimg=document.getElementById('gimg'); const gcap=document.getElementById('gcap');
+function showPic(k){gimg.src=pics[k].src; gcap.textContent=pics[k].cap;}
+document.getElementById('next').addEventListener('click',()=>{gi=(gi+1)%pics.length;showPic(gi);});
+document.getElementById('prev').addEventListener('click',()=>{gi=(gi-1+pics.length)%pics.length;showPic(gi);});
+
+/* CATS (editable + hearts + localStorage) */
+function saveCat(n){
+  const url=document.getElementById(`cat${n}url`).value.trim();
+  const name=document.getElementById(`cat${n}label`).value.trim();
+  if(url){localStorage.setItem(`cat${n}url`,url); document.getElementById(`cat${n}img`).src=url;}
+  if(name){localStorage.setItem(`cat${n}name`,name); document.getElementById(`cat${n}name`).textContent=name;}
+}
+['1','2'].forEach(n=>{
+  const u=localStorage.getItem(`cat${n}url`); const nm=localStorage.getItem(`cat${n}name`);
+  if(u) document.getElementById(`cat${n}img`).src=u; if(nm) document.getElementById(`cat${n}name`).textContent=nm;
+  document.getElementById(`cat${n}img`).addEventListener('click',e=>{for(let i=0;i<6;i++){const h=document.createElement('span');
+    h.className='heart'; h.style.left=(e.offsetX-7)+'px'; h.style.bottom='20px';
+    h.style.position='absolute'; e.target.parentElement.appendChild(h); setTimeout(()=>h.remove(),1400);}});
+});
+
+/* MUSIC (Talking to the Moon) */
+const audio=document.getElementById('playerAudio'); const audioSrc=document.getElementById('audioSrc');
+const songName=document.getElementById('songName'); const songUrl=document.getElementById('songUrl');
+(function loadSong(){const n=localStorage.getItem('songName'); const u=localStorage.getItem('songUrl');
+  if(n) songName.value=n; if(u){songUrl.value=u; audioSrc.src=u; audio.load();}})();
+function saveSong(){localStorage.setItem('songName',songName.value.trim());
+  localStorage.setItem('songUrl',songUrl.value.trim()); audioSrc.src=songUrl.value.trim(); audio.load();}
+function playSong(){audio.play().catch(()=>{});} function pauseSong(){audio.pause();}
+
+/* WISH JAR */
+const wishInput=document.getElementById('wishInput');
+function addWish(){
+  const t=wishInput.value.trim(); if(!t) return;
+  const w={t,ts:Date.now()}; const all=JSON.parse(localStorage.getItem('wishes')||'[]'); all.push(w);
+  localStorage.setItem('wishes',JSON.stringify(all)); wishInput.value=''; flyWish(t);
+}
+function clearWishes(){localStorage.removeItem('wishes');}
+function flyWish(text){const span=document.createElement('span'); span.textContent='  ✦ '+text+'  ';
+  span.style.position='fixed'; span.style.left=(10+Math.random()*70)+'vw'; span.style.bottom='-10px';
+  span.style.color='#dbeafe'; span.style.fontSize='12px'; span.style.opacity='.9';
+  span.style.transition='transform 6s linear, opacity 6s linear'; document.body.appendChild(span);
+  setTimeout(()=>{span.style.transform='translateY(-110vh)'; span.style.opacity='0';},10);
+  setTimeout(()=>span.remove(),6200);}
+(function preloadWishes(){try{const all=JSON.parse(localStorage.getItem('wishes')||'[]'); all.slice(-6).forEach(w=>setTimeout(()=>flyWish(w.t),400));}catch(e){}})();
+
+/* GAMES: Tabs */
+function openGame(n){document.getElementById('game1').classList.toggle('hidden', n!==1);
+  document.getElementById('game2').classList.toggle('hidden', n!==2);}
+
+/* GAME 1: Star Catcher */
+let g1Timer=null,g1Spawn=null,g1Time=20,g1Score=0,g1Running=false;
+const g1arena=document.getElementById('g1arena'), player=document.getElementById('player'), g1score=document.getElementById('g1score'), g1time=document.getElementById('g1time'), g1fill=document.getElementById('g1fill');
+let px=50;
+function startG1(){
+  stopG1(); g1Running=true; g1Score=0; g1Time=20; g1score.textContent=g1Score; g1time.textContent=g1Time; g1fill.style.width='100%';
+  px=50; player.style.left='calc(50% - 35px)'; g1Spawn=setInterval(spawnStar,600);
+  g1Timer=setInterval(()=>{g1Time--; g1time.textContent=g1Time; g1fill.style.width=(g1Time/20*100)+'%'; if(g1Time<=0) stopG1();},1000);
+}
+function stopG1(){g1Running=false; clearInterval(g1Timer); clearInterval(g1Spawn);
+  [...g1arena.querySelectorAll('.starDrop')].forEach(e=>e.remove());}
+function spawnStar(){
+  const s=document.createElement('div'); s.className='starDrop'; s.style.left=Math.random()*(g1arena.clientWidth-18)+'px'; s.style.top='-18px';
+  g1arena.appendChild(s);
+  const v=2.2+Math.random()*2.2;
+  const fall=()=>{if(!g1Running){s.remove();return}
+    const top=parseFloat(s.style.top); s.style.top=(top+v)+'px';
+    if(checkHit(s,player)){g1Score++; g1score.textContent=g1Score; s.remove(); return}
+    if(top>g1arena.clientHeight) {s.remove(); return}
+    requestAnimationFrame(fall);}; requestAnimationFrame(fall);
+}
+function checkHit(a,b){
+  const A=a.getBoundingClientRect(), B=b.getBoundingClientRect();
+  return !(A.right<B.left || A.left>B.right || A.bottom<B.top || A.top>B.bottom);
+}
+function movePlayer(clientX){
+  const rect=g1arena.getBoundingClientRect(); let x=clientX-rect.left;
+  x=Math.max(35, Math.min(rect.width-35, x)); player.style.left=(x-35)+'px';
+}
+g1arena.addEventListener('mousemove',e=>movePlayer(e.clientX));
+g1arena.addEventListener('touchmove',e=>{movePlayer(e.touches[0].clientX); e.preventDefault();},{passive:false});
+
+/* GAME 2: Heart Pop */
+let g2Timer=null,g2Spawn=null,g2Time=30,g2Score=0,g2Running=false;
+const g2arena=document.getElementById('g2arena'), g2score=document.getElementById('g2score'), g2time=document.getElementById('g2time'), g2fill=document.getElementById('g2fill');
+function startG2(){
+  stopG2(); g2Running=true; g2Score=0; g2Time=30; g2score.textContent=g2Score; g2time.textContent=g2Time; g2fill.style.width='100%';
+  g2Spawn=setInterval(spawnHeart,700);
+  g2Timer=setInterval(()=>{g2Time--; g2time.textContent=g2Time; g2fill.style.width=(g2Time/30*100)+'%'; if(g2Time<=0) stopG2();},1000);
+}
+function stopG2(){g2Running=false; clearInterval(g2Timer); clearInterval(g2Spawn);
+  [...g2arena.querySelectorAll('.heartTap')].forEach(e=>e.remove());}
+function spawnHeart(){
+  const h=document.createElement('div'); h.className='heartTap';
+  const w=g2arena.clientWidth, hgt=g2arena.clientHeight;
+  h.style.left=(Math.random()*(w-40))+'px'; h.style.top=(Math.random()*(hgt-120)+40)+'px';
+  g2arena.appendChild(h);
+  const kill=setTimeout(()=>h.remove(),1200);
+  h.addEventListener('click',()=>{g2Score++; g2score.textContent=g2Score; clearTimeout(kill); popFX(h); h.remove();});
+  h.addEventListener('touchstart',()=>{g2Score++; g2score.textContent=g2Score; clearTimeout(kill); popFX(h); h.remove();},{passive:true});
+}
+function popFX(el){for(let i=0;i<5;i++){const p=document.createElement('span');p.className='heart';
+  p.style.left=(el.offsetLeft+10)+'px'; p.style.bottom=(g2arena.clientHeight-el.offsetTop-10)+'px';
+  p.style.position='absolute'; g2arena.appendChild(p); setTimeout(()=>p.remove(),1400);}}
+
+/* INIT */
+showPic(0);
+
+/* Small helpers for first-time users */
+console.info('Edit content: headline, smallText, wishMessage, letterText, gallery pics[], cat images, and song URL. All inside this one file.');
+</script>
+</body>
+</html>
